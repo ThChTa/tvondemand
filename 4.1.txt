@@ -1,0 +1,175 @@
+-- 
+-- 4.1
+-- 
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_rental		-- insert_rental		
+AFTER INSERT ON rental
+FOR EACH ROW 
+BEGIN 
+
+declare fn VARCHAR(45);
+declare ln VARCHAR(45);
+
+select first_name into fn
+from customer 
+inner join rental on customer.customer_id = rental.customer_id
+where rental.rental_id = new.rental_id;
+
+select last_name into ln
+from customer 
+inner join rental on customer.customer_id = rental.customer_id
+where rental.rental_id = new.rental_id;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+values (fn,ln,NEW.rental_date,'Epitixia','insert','rental');
+END$
+delimiter ;
+
+DELIMITER $
+
+CREATE TRIGGER for_update_rental				-- update_rental
+AFTER UPDATE ON rental
+FOR EACH ROW 
+BEGIN 
+
+declare fn VARCHAR(45);
+declare ln VARCHAR(45);
+
+select first_name into fn
+from customer 
+inner join rental on customer.customer_id = rental.customer_id
+where rental.rental_id = new.rental_id;
+
+select last_name into ln
+from customer 
+inner join rental on customer.customer_id = rental.customer_id
+where rental.rental_id = new.rental_id;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_)  
+values (fn,ln,NEW.rental_date,'Epitixia','update','rental');
+END$
+delimiter ;
+
+DELIMITER $
+
+CREATE TRIGGER for_delete_rental				-- delete_rental
+AFTER DELETE ON rental
+FOR EACH ROW 
+BEGIN 
+
+declare fn VARCHAR(45);
+declare ln VARCHAR(45);
+
+select first_name into fn
+from customer 
+inner join rental on customer.customer_id = rental.customer_id
+where rental.rental_id = old.rental_id;
+
+select last_name into ln
+from customer 
+inner join rental on customer.customer_id = rental.customer_id
+where rental.rental_id = old.rental_id;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_)  
+values ('ADMIN/EMPLOEE','ADMIN/EMPLOEE',old.rental_date,'Epitixia','delete','rental');
+END$
+delimiter ;
+
+DELIMITER $
+
+CREATE TRIGGER for_insert_payment				-- insert_payment
+AFTER INSERT ON payment
+FOR EACH ROW 
+BEGIN 
+
+declare fn VARCHAR(45);
+declare ln VARCHAR(45);
+
+select first_name into fn
+from customer 
+inner join payment on customer.customer_id = payment.customer_id
+where payment.payment_id = new.payment_id;
+
+select last_name into ln
+from customer 
+inner join payment on customer.customer_id = payment.customer_id
+where payment.payment_id = new.payment_id;
+ 
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_)  
+values (fn,ln,NEW.payment_date,'Epitixia','insert','payment');
+END$
+delimiter ;
+
+
+DELIMITER $
+
+CREATE TRIGGER for_update_payment					-- update_payment
+AFTER UPDATE ON payment
+FOR EACH ROW 
+BEGIN 
+
+declare fn VARCHAR(45);
+declare ln VARCHAR(45);
+
+select first_name into fn
+from customer 
+inner join payment on customer.customer_id = payment.customer_id
+where payment.payment_id = new.payment_id;
+
+select last_name into ln
+from customer 
+inner join payment on customer.customer_id = payment.customer_id
+where payment.payment_id = new.payment_id;
+ 
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_)  
+values (fn,ln,NEW.payment_date,'Epitixia','update','payment');
+END$
+delimiter ;
+
+DELIMITER $
+
+CREATE TRIGGER for_delete_payment					-- delete_payment
+AFTER DELETE ON payment
+FOR EACH ROW 
+BEGIN 
+
+declare fn VARCHAR(45);
+declare ln VARCHAR(45);
+
+select first_name into fn
+from customer 
+inner join payment on customer.customer_id = payment.customer_id
+where payment.payment_id = old.payment_id;
+
+select last_name into ln
+from customer 
+inner join payment on customer.customer_id = payment.customer_id
+where payment.payment_id = old.payment_id;
+ 
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_)  
+values ('ADMIN/EMPLOYEE','ADMIN/EMPLOYEE',old.payment_date,'Epitixia','delete','payment');
+END$
+delimiter ;
+
+
+-- INSERT INTO `rental` (`rental_id`, `rental_date`, `inventory_id`, `customer_id`,`series_inventory_id`) 
+-- VALUES(667, '2005-05-04 12:50:00', 3774, 402,null);
+
+-- INSERT INTO `payment` (`payment_id`, `customer_id`, `rental_id`, `amount`, `payment_date`) VALUES
+-- (663, 402, 667, '0.99', '2005-07-06 15:25:08');
+
+-- INSERT INTO `rental` (`rental_id`, `rental_date`, `inventory_id`, `customer_id`,`series_inventory_id`) 
+-- VALUES(668, '2005-03-04 12:50:00', 3774, 162,null);
+
+-- INSERT INTO `payment` (`payment_id`, `customer_id`, `rental_id`, `amount`, `payment_date`) VALUES
+-- (664, 162, 668, '0.99', '2005-03-06 15:25:08');
+
+-- update payment set amount = 2.0 where payment_id=663;
+
+-- update rental set inventory_id = 187 where rental_id=668;
+
+-- delete  from rental where rental_id=667;
+
+-- SELECT * FROM log_table;

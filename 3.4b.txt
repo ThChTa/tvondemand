@@ -1,0 +1,45 @@
+-- 
+-- 3.4_B
+-- 
+
+CREATE  INDEX  index_for USING HASH ON actor(last_name) ;
+
+ DELIMITER $
+CREATE PROCEDURE pr_3_4_b(IN given_lst_nm VARCHAR(45))
+BEGIN 
+
+DECLARE first_name_procedure VARCHAR(45);
+DECLARE last_name_procedure VARCHAR(45);
+declare find_count_of_first_names_char VARCHAR(45);
+DECLARE actor_id_procedure SMALLINT;
+DECLARE count_names TINYINT;
+
+
+SELECT first_name,last_name INTO last_name_procedure, first_name_procedure
+FROM actor  
+WHERE actor_id_procedure = actor_id;
+
+SELECT first_name AS 'FIRST_NAME' , last_name AS 'LAST_NAME'
+FROM actor  
+WHERE last_name = given_lst_nm
+GROUP BY first_name
+order by count(first_name) desc, first_name;
+
+SELECT count(*) INTO count_names
+FROM actor  
+WHERE last_name = given_lst_nm;
+
+
+if 
+count_names>1
+then
+ SELECT count_names AS 'No of actors with the same LastName';
+END IF;
+
+END$
+
+DELIMITER ;
+
+-- CALL pr_3_4_b('Jordan');
+-- CALL pr_3_4_b('Gewrgiou');
+-- CALL pr_3_4_b('Gable');

@@ -1,0 +1,87 @@
+--
+-- PROCEDURE 3.2
+--
+ 
+
+  DELIMITER $
+  CREATE PROCEDURE rental_count( IN c_email VARCHAR(50) , IN c_date DATE, OUT c_rentals TINYINT)
+ BEGIN 
+ 
+DECLARE c_film_pack BOOLEAN;
+DECLARE c_series_pack BOOLEAN;
+DECLARE c_full_pack BOOLEAN;
+DECLARE x DATETIME;
+DECLARE y DATETIME;
+DECLARE DateAdd DATE;
+
+DECLARE id smallint; 
+
+DECLARE film_rentals TINYINT;
+DECLARE series_rentals TINYINT;
+
+ 
+	SELECT CAST(c_date AS DATETIME) AS  'START_TIME' INTO x;
+	SELECT date_add(x, INTERVAL 1 DAY) AS 'DATE_ADD' INTO DateAdd;
+	SELECT CAST(DateAdd AS DATETIME) AS  'END_TIME' INTO y;
+
+
+
+	SELECT customer_id INTO id FROM customer WHERE c_email = email;
+	SELECT film_pack INTO c_film_pack FROM customer WHERE id=customer_id;
+	SELECT series_pack INTO c_series_pack FROM customer WHERE id=customer_id;
+	SELECT full_pack INTO c_full_pack FROM customer WHERE id=customer_id;
+
+
+IF(c_film_pack = TRUE) THEN                                  --  Count rentals for Film Pack
+  
+	SELECT count(rental.rental_id) INTO c_rentals
+	FROM rental 
+	INNER JOIN customer ON customer.customer_id = rental.customer_id
+	WHERE customer.email = c_email AND rental.rental_date >= x AND rental.rental_date < y; 
+    
+    SELECT c_rentals AS 'SUM_OF_RENTALS || FILM PACK';
+    
+   
+   
+ELSEIF(c_series_pack = TRUE) THEN 							--  Count rentals for Series Pack
+  
+	SELECT count(rental.rental_id)  INTO c_rentals
+	FROM rental
+	INNER JOIN customer ON customer.customer_id = rental.customer_id
+	WHERE customer.email = c_email AND rental.rental_date >= x AND rental.rental_date < y;
+    
+    SELECT c_rentals AS 'SUM_OF_RENTALS || SERIES PACK';
+    
+    
+ 
+
+ELSEIF(c_full_pack = TRUE) THEN							    --  Count rentals for Full Pack
+  
+    SELECT count(rental.rental_id) into series_rentals
+	FROM rental
+	INNER JOIN customer ON customer.customer_id = rental.customer_id
+	WHERE customer.email = c_email AND rental.rental_date >= x AND rental.rental_date < y AND rental.inventory_id IS NULL; 
+    
+    --  SELECT series_rentals;                        
+    
+    SELECT count(rental.rental_id) into film_rentals
+    FROM rental 
+    INNER JOIN customer ON customer.customer_id = rental.customer_id
+    WHERE customer.email = c_email AND rental.rental_date >= x AND rental.rental_date < y AND rental.series_inventory_id IS NULL; 
+    
+    --  SELECT film_rentals;
+  
+    SELECT series_rentals + film_rentals INTO c_rentals;
+    SELECT c_rentals AS 'SUM_OF_RENTALS || FULL PACK' ;
+	
+    
+END IF;
+		
+    END$
+
+ DELIMITER ;
+ 
+-- CALL rental_count('LAUREN.HUDSON@sakilacustomer.org','2005-06-06', @c_rentals);
+-- CALL rental_count('LAUREN.HUDSON@sakilacustomer.org','2005-07-31', @c_rentals);
+-- CALL rental_count('LUIS.YANEZ@sakilacustomer.org','2005-06-06', @c_rentals);
+-- CALL rental_count('ALEXANDROS.DIMITRIOU@sakilacustomer.org','2007-01-01', @c_rentals);

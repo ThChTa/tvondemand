@@ -1,0 +1,55 @@
+--
+-- PROCEDURE 3.1
+--
+
+DELIMITER $
+
+CREATE PROCEDURE p(IN product ENUM('m','s'),IN count TINYINT, IN date_1 DATE, IN date_2 DATE)
+BEGIN
+DECLARE datetime_1 DATETIME;
+DECLARE datetime_2 DATETIME;
+DECLARE c_datetime DATETIME;
+DECLARE date_add DATE;
+
+
+SELECT CAST(date_1 AS DATETIME) AS  'START_TIME' INTO datetime_1;
+
+SELECT CAST(date_2 AS DATETIME) AS 'TEMP' INTO c_datetime;
+SELECT date_add(c_datetime, INTERVAL 1 DAY) AS 'DATE_ADD' INTO date_add; -- metatroph gia na upologizei oloklhrh thn mera tou deuterou orismatos
+SELECT CAST(date_add AS DATETIME) AS  'END_TIME' INTO datetime_2;
+
+   IF(product = 'm') THEN          										-- if, gia tanies
+
+	SELECT film.film_id AS 'FILM ID' , film.title AS 'FILM TITLE', rental.inventory_id, count(rental.rental_id) AS 'RENTAL COUNTS'
+	FROM rental
+	INNER JOIN inventory ON rental.inventory_id = inventory.inventory_id
+	INNER JOIN film ON film.film_id = inventory.film_id
+	WHERE rental.rental_date >=  datetime_1 AND  rental.rental_date <  datetime_2
+	GROUP BY rental.inventory_id
+	order by count(rental.rental_id) desc, film.film_id
+	LIMIT count;
+    
+ELSEIF(product = 's') THEN
+
+ 												 -- if, gia seires
+
+	SELECT series.series_id AS 'SERIES ID' , series.title AS 'SERIES TITLE',  sum(season.season_episodes) AS 'SUM OF EPISODES RENTED'        -- season.season_episodes
+	FROM rental
+	INNER JOIN series_inventory ON rental.series_inventory_id = series_inventory.series_inventory_id
+	inner join season ON series_inventory.season_id = season.season_id
+	INNER JOIN series ON series.series_id = season.series_id
+	WHERE rental.rental_date >=  datetime_1 AND  rental.rental_date <  datetime_2 
+	GROUP BY series.series_id
+	ORDER BY sum(season.season_episodes) desc , series.series_id
+	LIMIT count;
+
+
+   END IF;
+   
+END$
+
+DELIMITER ;	
+
+-- CALL p('s',5,'2007-01-01','2007-04-06');
+
+--  CALL p('m',7,'2005-06-03','2005-09-20');

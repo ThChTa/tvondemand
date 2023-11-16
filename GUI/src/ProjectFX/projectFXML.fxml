@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane fx:id="parent_container" prefHeight="494.0" prefWidth="595.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ProjectFX.ProjectFXMLController">
+   <children>
+      <AnchorPane id="AnchorPane" fx:id="main_page" prefHeight="459.0" prefWidth="485.0" style="-fx-background-color: transparent;">
+         <children>
+            <AnchorPane fx:id="root" layoutX="73.0" layoutY="38.0" prefHeight="435.0" prefWidth="526.0" style="-fx-background-color: transparent; -fx-background-radius: 1em;" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="73.0" AnchorPane.rightAnchor="163.0" AnchorPane.topAnchor="38.0">
+               <children>
+                  <AnchorPane fx:id="login" layoutX="110.0" layoutY="29.0" prefHeight="378.0" prefWidth="253.0" style="-fx-background-color: white; -fx-background-radius: 1em;">
+                     <children>
+                        <Label layoutX="119.0" layoutY="77.0" text="Connect As">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="customer_button" layoutX="127.0" layoutY="145.0" mnemonicParsing="false" onAction="#switch_customer_login" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #51C9F0; -fx-background-radius: 1em;" text="Customer">
+                           <effect>
+                              <Glow level="0.2" />
+                           </effect>
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="employee_button" layoutX="127.0" layoutY="211.0" mnemonicParsing="false" onAction="#switch_employee_login" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #51C9F0; -fx-background-radius: 1em;" text="Employee">
+                           <effect>
+                              <Glow level="0.2" />
+                           </effect>
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="admin_button" layoutX="126.0" layoutY="277.0" mnemonicParsing="false" onAction="#switch_admin_login" prefHeight="25.0" prefWidth="87.0" style="-fx-background-color: #51C9F0; -fx-background-radius: 1em;" text="Admin">
+                           <effect>
+                              <Glow level="0.2" />
+                           </effect>
+                           <font>
+                              <Font name="System Italic" size="12.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button layoutX="119.0" layoutY="14.0" mnemonicParsing="false" onAction="#slide_back" prefHeight="30.0" prefWidth="0.0" style="-fx-background-color: transparent; -fx-background-radius: 15em;">
+                           <graphic>
+                              <ImageView fitHeight="22.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/left-arrow.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="14.0" layoutY="12.0" prefHeight="412.0" prefWidth="351.0" style="-fx-background-color: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12); -fx-background-radius: 1em;">
+                     <children>
+                        <ImageView fx:id="filmdisk" fitHeight="205.0" fitWidth="192.0" layoutX="80.0" layoutY="110.0" onMouseClicked="#filmDisk" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/film-reel-pngrepo-com.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

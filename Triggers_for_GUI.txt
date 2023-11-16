@@ -1,0 +1,1674 @@
+-- 
+-- Triggers gia logs-GUI
+-- 
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_rental		-- insert_rental		
+AFTER INSERT ON rental
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','rental');
+END$
+
+DELIMITER ;
+
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_payment		-- insert_payment		
+AFTER INSERT ON payment
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','payment');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_customer		-- insert_customer		
+AFTER INSERT ON customer
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','customer');
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','customer');
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','customer');
+
+ELSEIF(cus_active = FALSE) THEN
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES ('ad','da',cur_date,'Epitixia','insert','customer');
+DELETE FROM log_table WHERE first_name = 'ad' AND last_name = 'da';
+
+END IF;
+
+
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_update_customer		-- update_customer		
+AFTER UPDATE ON customer
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','update','customer');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_delete_customer		-- delete_customer		
+AFTER DELETE ON customer
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','delete','customer');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_employee		-- insert_employee		
+AFTER INSERT ON employee
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','employee');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_update_employee		-- update_employee		
+AFTER UPDATE ON employee
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','update','employee');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_delete_employee		-- delete_employee		
+AFTER DELETE ON employee
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','delete','employee');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_administrator		-- insert_administrator		
+AFTER INSERT ON administrator
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','administrator');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_update_administrator		-- update_administrator		
+AFTER UPDATE ON administrator
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','update','administrator');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_delete_administrator		-- delete_administrator		
+AFTER DELETE ON administrator
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','delete','administrator');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_actor		-- insert_actor		
+AFTER INSERT ON actor
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','actor');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_update_actor		-- update_actor		
+AFTER UPDATE ON actor
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','update','actor');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_country		-- insert_country		
+AFTER INSERT ON country
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','country');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_city		-- insert_city		
+AFTER INSERT ON city
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','city');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_address		-- insert_address		
+AFTER INSERT ON address
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+DECLARE error VARCHAR(45);
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','address');
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','address');
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','address');
+
+ELSEIF(cus_active = FALSE) THEN
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES ('ad','da',cur_date,'Epitixia','insert','address');
+DELETE FROM log_table WHERE first_name = 'ad' AND last_name = 'da';
+END IF;
+
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_update_address		-- update_address		
+AFTER UPDATE ON address
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','update','address');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_delete_address		-- delete_address		
+AFTER DELETE ON address
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','delete','address');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_category		-- insert_category		
+AFTER INSERT ON category
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','category');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_language		-- insert_language		
+AFTER INSERT ON language
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','language');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_film		-- insert_film		
+AFTER INSERT ON film
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','film');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_series		-- insert_series		
+AFTER INSERT ON series
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','series');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_season		-- insert_season		
+AFTER INSERT ON season
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','season');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_film_series_actor		-- insert_film_series_actor		
+AFTER INSERT ON film_series_actor
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','film_series_actor');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_film_series_category		-- insert_film_series_category		
+AFTER INSERT ON film_series_category
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','film_series_category');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_inventory		-- insert_inventory	
+AFTER INSERT ON inventory
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','inventory');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_series_inventory		-- insert_series_inventory		
+AFTER INSERT ON series_inventory
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','series_inventory');
+END$
+
+DELIMITER ;
+
+DELIMITER $									
+
+CREATE TRIGGER for_insert_pricing		-- insert_pricing		
+AFTER INSERT ON pricing
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','insert','pricing');
+END$
+
+DELIMITER ;
+DELIMITER $
+CREATE TRIGGER for_update_pricing		-- update_pricing		
+AFTER UPDATE ON pricing
+FOR EACH ROW 
+BEGIN 
+
+DECLARE fn VARCHAR(45);
+DECLARE ln VARCHAR(45);
+DECLARE cus_active BOOLEAN;
+DECLARE emp_active BOOLEAN;
+DECLARE adm_active BOOLEAN;
+DECLARE cur_date DATETIME;
+
+SELECT CURRENT_TIMESTAMP() INTO cur_date;
+
+SELECT in_use INTO cus_active
+FROM current_customer;
+
+SELECT in_use INTO emp_active
+FROM current_employee;
+
+SELECT in_use INTO adm_active
+FROM current_administrator;
+
+IF(cus_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_customer;
+
+SELECT last_name into ln
+FROM current_customer;
+
+ELSEIF(emp_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_employee;
+
+SELECT last_name into ln
+FROM current_employee;
+
+ELSEIF(adm_active = TRUE) THEN
+
+SELECT first_name into fn
+FROM current_administrator;
+
+SELECT last_name into ln
+FROM current_administrator;
+
+END IF;
+
+INSERT INTO log_table(first_name,last_name,change_date,katastasi,eidos,table_name_) 
+VALUES (fn,ln,cur_date,'Epitixia','update','pricing');
+END$
+
+DELIMITER ;

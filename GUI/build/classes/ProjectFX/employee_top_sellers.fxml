@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ProjectFX.Employee_top_sellersController">
+   <children>
+      <Pane layoutX="37.0" layoutY="43.0" prefHeight="523.0" prefWidth="697.0" style="-fx-background-color: linear-gradient(to right top, #051937, #004d7a, #008793, #00bf72, #a8eb12); -fx-background-radius: 2em; -fx-opacity: 0.6;" />
+      <Pane layoutX="29.0" layoutY="32.0" prefHeight="523.0" prefWidth="697.0" style="-fx-background-color: #f4f7f0; -fx-background-radius: 2em;">
+         <children>
+            <TableView fx:id="film_table" layoutX="55.0" layoutY="127.0" prefHeight="282.0" prefWidth="247.0" stylesheets="@css%20files/table.css">
+               <columns>
+                  <TableColumn fx:id="col_film" prefWidth="160.0" text="Film" />
+                  <TableColumn fx:id="col_films_sold" prefWidth="84.0" text="Copies Sold" />
+               </columns>
+            </TableView>
+            <Label layoutX="281.0" layoutY="21.0" prefHeight="35.0" prefWidth="149.0" style="-fx-background-color: white; -fx-background-radius: 0.5em;" text="   Top Sellers">
+               <font>
+                  <Font name="System Italic" size="24.0" />
+               </font>
+            </Label>
+            <Button layoutX="122.0" layoutY="26.0" mnemonicParsing="false" onAction="#fetch" style="-fx-background-color: #51C9F0; -fx-background-radius: 0.5em;" text="Fetch">
+               <font>
+                  <Font name="System Bold Italic" size="12.0" />
+               </font></Button>
+            <TableView fx:id="series_table" layoutX="377.0" layoutY="127.0" prefHeight="282.0" prefWidth="247.0" stylesheets="@css%20files/table.css">
+               <columns>
+                  <TableColumn fx:id="col_series" prefWidth="155.0" text="Series" />
+                  <TableColumn fx:id="col_series_sold" prefWidth="89.0" text="Episodes Sold" />
+               </columns>
+            </TableView>
+            <Label layoutX="430.0" layoutY="81.0" prefHeight="30.0" prefWidth="141.0" style="-fx-background-color: white; -fx-background-radius: 0.5em;" text="        Series">
+               <font>
+                  <Font name="System Bold Italic" size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="108.0" layoutY="86.0" prefHeight="25.0" prefWidth="141.0" style="-fx-background-color: white; -fx-background-radius: 0.5em;" text="         Films">
+               <font>
+                  <Font name="System Bold Italic" size="20.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

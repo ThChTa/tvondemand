@@ -1,0 +1,26 @@
+-- 
+-- 	TRIGGER 4.3
+--
+
+DELIMITER $
+CREATE TRIGGER er4_3 
+BEFORE UPDATE ON customer 
+FOR EACH ROW 
+BEGIN 
+IF NEW.email<>OLD.email THEN 
+SET NEW.email=OLD.email;
+SIGNAL SQLSTATE VALUE '45000'
+SET MESSAGE_TEXT = 'YOU CANNOT CHANGE YOUR EMAIL ADDRESS'; 
+END IF;
+END$
+DELIMITER ;
+
+
+-- update customer set  email = 'another_grace@sakilacustomer.org'
+-- where email = 'GRACE.ELLIS@sakilacustomer.org';
+
+-- update customer set  email = 'another_linda@sakilacustomer.org'
+-- where email = 'LINDA.WILLIAMS@sakilacustomer.org';
+
+-- select * from customer where email = 'GRACE.ELLIS@sakilacustomer.org';
+-- select * from customer where email = 'LINDA.WILLIAMS@sakilacustomer.org';

@@ -1,0 +1,93 @@
+--
+-- 3.3
+--
+DELIMITER $
+CREATE PROCEDURE total_m()
+
+BEGIN
+DECLARE min_datetime datetime;
+DECLARE max_datetime datetime;
+DECLARE min_date date;
+DECLARE max_date date;
+DECLARE day_of_min TINYINT; 
+DECLARE day_of_max TINYINT; 
+DECLARE firstday_of_min_month DATE; 
+DECLARE firstday_of_max_month DATE; 
+DECLARE firstday_of_max_month_for_until DATE; 
+DECLARE month_repeat DATE;
+DECLARE sum_amount DECIMAL(5,2);
+DECLARE month_year VARCHAR(50);
+
+DECLARE first_day_of_month DATE;
+DECLARE first_day_of_next_month DATE;
+
+SELECT min(payment_date) INTO min_datetime
+FROM payment;
+
+SELECT max(payment_date) INTO max_datetime
+FROM payment;
+
+SELECT CAST(min_datetime AS DATE) INTO min_date;
+
+SELECT CAST(max_datetime AS DATE) INTO max_date;
+
+SELECT DAY(min_date) INTO day_of_min;
+SELECT DAY(max_date) INTO day_of_max;
+
+SELECT DATE_ADD(min_date, INTERVAL (1-day_of_min) DAY) INTO firstday_of_min_month;
+SELECT DATE_ADD(max_date, INTERVAL (1-day_of_max) DAY) INTO firstday_of_max_month;
+SELECT DATE_ADD(firstday_of_max_month, INTERVAL 1 MONTH) INTO firstday_of_max_month_for_until;
+
+
+
+SET month_repeat = firstday_of_min_month;
+
+
+
+
+REPEAT                                                                        -- REPEAT FOR SERIES
+
+SET first_day_of_month = month_repeat;
+SELECT DATE_ADD(first_day_of_month, INTERVAL 1 MONTH) INTO first_day_of_next_month;
+
+SELECT DATE_FORMAT(month_repeat,'%M %Y') into month_year;
+
+SELECT sum(payment.amount) as 'AMOUNT' into sum_amount
+FROM payment
+inner join rental ON rental.rental_id = payment.rental_id
+where rental.inventory_id IS NULL AND first_day_of_month<=payment.payment_date AND  payment.payment_date < first_day_of_next_month;
+
+SELECT month_year AS 'ON MONTH', sum_amount AS 'AMOUNT_FOR_SERIES';
+SELECT DATE_ADD(month_repeat, INTERVAL 1 MONTH) INTO month_repeat;
+SET sum_amount = 0.00;
+
+UNTIL(month_repeat=firstday_of_max_month_for_until)
+END REPEAT;
+
+SELECT DATE_ADD(min_date, INTERVAL (1-day_of_min) DAY) INTO firstday_of_min_month;
+SELECT DATE_ADD(max_date, INTERVAL (1-day_of_max) DAY) INTO firstday_of_max_month;
+SET month_repeat = firstday_of_min_month;
+
+REPEAT                                                                   -- REPEAT FOR FILMS
+
+SET first_day_of_month = month_repeat;
+SELECT DATE_ADD(first_day_of_month, INTERVAL 1 MONTH) INTO first_day_of_next_month;
+
+SELECT DATE_FORMAT(month_repeat,'%M %Y') into month_year;
+
+SELECT sum(payment.amount) as 'AMOUNT' into sum_amount
+FROM payment
+inner join rental ON rental.rental_id = payment.rental_id
+where rental.series_inventory_id IS NULL AND first_day_of_month<=payment.payment_date AND  payment.payment_date < first_day_of_next_month;
+
+SELECT month_year AS 'ON MONTH', sum_amount AS 'AMOUNT_FOR_FILMS';
+SELECT DATE_ADD(month_repeat, INTERVAL 1 MONTH) INTO month_repeat;
+SET sum_amount = 0.00;
+
+UNTIL(month_repeat=firstday_of_max_month_for_until)
+END REPEAT;
+
+END$
+
+DELIMITER ;
+CALL total_m();

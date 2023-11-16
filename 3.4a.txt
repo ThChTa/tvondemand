@@ -1,0 +1,59 @@
+-- 
+-- 3.4_A
+-- 
+CREATE  INDEX  index_for_procedure_3_4a USING BTREE ON actor(last_name,first_name) ;
+ 
+ DELIMITER $
+CREATE PROCEDURE pr_3_4_a(IN par_a VARCHAR(45), IN par_b VARCHAR(45))
+
+BEGIN 
+DECLARE min_f_name VARCHAR(45);
+DECLARE max_l_name VARCHAR(45);
+-- DECLARE cnt_ int(6);
+DECLARE last_name_procedure VARCHAR(45);
+DECLARE actor_id_procedure SMALLINT;
+
+SELECT last_name INTO last_name_procedure
+FROM actor  
+WHERE actor_id_procedure = actor_id;
+
+SELECT min(last_name) into min_f_name                         -- FIND MIN CHAR FROM PAR_A 
+from actor 
+WHERE last_name like Concat(par_a,'%')
+order by last_name;
+
+if(min_f_name IS NULL) THEN
+SELECT LEFT(par_a, 1) into min_f_name;
+SELECT CHAR(ASCII(min_f_name) + 1) into min_f_name;
+END IF;															-- END
+
+
+SELECT max(last_name) into max_l_name						-- FIND MAX CHAR FROM PAR_B 
+from actor 
+WHERE last_name like Concat(par_b,'%')
+order by last_name;
+
+SELECT min_f_name AS 'MINIMUM ALPHABETICAL NAME';
+SELECT max_l_name AS 'MAXIMUM ALPHABETICAL NAME';				-- END
+
+
+
+select count(*) AS 'NAMES FOUND'
+ FROM actor
+ WHERE last_name >= min_f_name AND last_name <= max_l_name;
+
+
+
+SELECT last_name AS 'LAST NAME' ,first_name AS 'FIRST NAME'
+FROM actor
+WHERE last_name >= min_f_name AND last_name <=  max_l_name
+order by last_name, first_name;
+
+
+
+END$
+
+DELIMITER ;
+
+-- call pr_3_4_a('BY', 'CA');
+-- call pr_3_4_a('AT', 'AU');

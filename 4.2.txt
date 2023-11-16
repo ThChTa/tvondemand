@@ -1,0 +1,201 @@
+create table c(c_rentals TINYINT);
+insert into c values(0);
+
+   DELIMITER $
+  CREATE PROCEDURE rental_count( IN c_email VARCHAR(50) , IN c_date DATE)
+ BEGIN 
+ 
+DECLARE c_film_pack BOOLEAN;
+DECLARE c_series_pack BOOLEAN;
+DECLARE c_full_pack BOOLEAN;
+DECLARE x DATETIME;
+DECLARE y DATETIME;
+DECLARE DateAdd DATE;
+declare c_rental tinyint;
+
+DECLARE id smallint; 
+
+DECLARE film_rentals TINYINT;
+DECLARE series_rentals TINYINT;
+
+ 
+	SELECT CAST(c_date AS DATETIME) AS  'START_TIME' INTO x;
+	SELECT date_add(x, INTERVAL 1 DAY) AS 'DATE_ADD' INTO DateAdd;
+	SELECT CAST(DateAdd AS DATETIME) AS  'END_TIME' INTO y;
+
+
+
+	SELECT customer_id INTO id FROM customer WHERE c_email = email;
+	SELECT film_pack INTO c_film_pack FROM customer WHERE id=customer_id;
+	SELECT series_pack INTO c_series_pack FROM customer WHERE id=customer_id;
+	SELECT full_pack INTO c_full_pack FROM customer WHERE id=customer_id;
+
+
+IF(c_film_pack = TRUE) THEN                                  --  Count rentals for Film Pack
+  
+	SELECT count(rental.rental_id) into  c_rental
+	FROM rental 
+	INNER JOIN customer ON customer.customer_id = rental.customer_id
+	WHERE customer.email = c_email AND rental.rental_date >= x AND rental.rental_date < y; 
+    
+    update c set c_rentals = c_rental;
+   
+
+   
+   
+ELSEIF(c_series_pack = TRUE) THEN 							--  Count rentals for Series Pack
+  
+	SELECT count(rental.rental_id)  into  c_rental
+	FROM rental
+	INNER JOIN customer ON customer.customer_id = rental.customer_id
+	WHERE customer.email = c_email AND rental.rental_date >= x AND rental.rental_date < y;
+        
+	update c set c_rentals = c_rental;
+    
+
+ELSEIF(c_full_pack = TRUE) THEN							    --  Count rentals for Full Pack
+  
+    SELECT count(rental.rental_id) into series_rentals
+	FROM rental
+	INNER JOIN customer ON customer.customer_id = rental.customer_id
+	WHERE customer.email = c_email AND rental.rental_date >= x AND rental.rental_date < y AND rental.inventory_id IS NULL; 
+    
+    --  SELECT series_rentals;                        
+    
+    SELECT count(rental.rental_id) into film_rentals
+    FROM rental 
+    INNER JOIN customer ON customer.customer_id = rental.customer_id
+    WHERE customer.email = c_email AND rental.rental_date >= x AND rental.rental_date < y AND rental.series_inventory_id IS NULL; 
+    
+    --  SELECT film_rentals;
+  
+    SELECT (series_rentals + film_rentals) into c_rental;
+    update c set c_rentals = c_rental;
+	
+    
+END IF;
+		
+    END$
+
+ DELIMITER ;
+ 
+-- CALL rental_count('LAUREN.HUDSON@sakilacustomer.org','2005-06-06');
+-- CALL rental_count('LAUREN.HUDSON@sakilacustomer.org','2005-07-31');
+-- CALL rental_count('LUIS.YANEZ@sakilacustomer.org','2005-06-06');
+-- CALL rental_count('ALEXANDROS.DIMITRIOU@sakilacustomer.org','2007-01-01');
+-- CALL rental_count('ALEXANDROS.DIMITRIOU@sakilacustomer.org','2007-01-01');
+
+--
+-- Trigger 4.2
+--
+
+DELIMITER $
+
+CREATE TRIGGER t_4_2
+AFTER INSERT ON rental
+FOR EACH ROW
+BEGIN
+
+DECLARE c_rentalss  TINYINT;
+DECLARE c_email VARCHAR(50); 
+DECLARE r_d DATETIME; 
+
+declare film boolean;
+declare series boolean;
+declare full boolean;
+
+declare cust_id tinyint;
+declare sum_of_ep tinyint;
+
+
+select film_pack,series_pack,full_pack into film,series,full from customer
+where customer_id = new.customer_id;
+
+if(film=true) then 								-- for film pack
+
+SELECT email into c_email
+from customer
+inner join rental ON rental.customer_id = customer.customer_id
+where New.rental_date = rental_date;
+
+CALL rental_count(c_email,New.rental_date);
+select c_rentals from c into c_rentalss;
+ update c set c_rentals = c_rentalss;
+ if(c_rentalss>=3) then
+
+INSERT INTO `payment` (`payment_id`, `customer_id`, `rental_id`, `amount`, `payment_date`) VALUES
+(NULL, new.customer_id, new.rental_id, 0.2, '2005-07-31 11:31:32');
+ end if; 
+ end if;
+ 
+ 
+ if(series=true) then 						-- for series pack
+
+ SELECT email into c_email
+ from customer
+ inner join rental ON rental.customer_id = customer.customer_id
+ where New.rental_date = rental_date;
+
+ CALL rental_count(c_email,New.rental_date);
+ select c_rentals from c into c_rentalss;
+ update c set c_rentals = c_rentalss;
+ 
+ SELECT season.season_episodes   into sum_of_ep
+ FROM season
+ INNER JOIN series_inventory ON series_inventory.season_id = season.season_id
+ inner join rental on rental.series_inventory_id = series_inventory.series_inventory_id
+ where rental.customer_id = new.customer_id
+ order by rental.rental_date desc
+ limit 1;
+    
+    
+ 
+ if(c_rentalss>=3) then
+
+ INSERT INTO `payment` (`payment_id`, `customer_id`, `rental_id`, `amount`, `payment_date`) VALUES
+ (NULL, new.customer_id, new.rental_id, (sum_of_ep*0.2)/2 , '2007-01-04 23:51:02');
+ end if; 
+ 
+ end if;
+ 
+ 
+  if(full=true) then 					-- for full pack
+  
+
+ SELECT email into c_email
+ from customer
+ inner join rental ON rental.customer_id = customer.customer_id
+ where New.rental_date = rental_date;
+
+ CALL rental_count(c_email,New.rental_date);
+ select c_rentals from c into c_rentalss;
+ update c set c_rentals = c_rentalss;
+ 
+ SELECT season.season_episodes   into sum_of_ep
+ FROM season
+ INNER JOIN series_inventory ON series_inventory.season_id = season.season_id
+ inner join rental on rental.series_inventory_id = series_inventory.series_inventory_id
+ where rental.customer_id = new.customer_id
+ order by rental.rental_date desc
+ limit 1;
+ 
+ if(c_rentalss>=3) then
+
+ INSERT INTO `payment` (`payment_id`, `customer_id`, `rental_id`, `amount`, `payment_date`) VALUES
+ (NULL, new.customer_id, new.rental_id, (sum_of_ep*0.1 +0.3)/2 , '2007-01-04 23:51:02');             -- 0.1 for episodes kai 0.3 for films
+ end if; 
+ 
+ end if;
+
+end $ 
+
+
+-- INSERT INTO `rental` (`rental_id`, `rental_date`, `inventory_id`, `customer_id`,`series_inventory_id`) VALUES
+-- (null, '2007-01-04 23:31:32', null, 600,9999),
+-- (null, '2007-01-04 23:31:35', null, 600,9999),
+-- (null, '2007-01-04 23:31:37', null, 600,9999);
+
+
+ -- select *  from c;
+ -- select * from rental where customer_id = 600;
+ -- select * from payment where customer_id = 600;

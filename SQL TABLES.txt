@@ -1,0 +1,349 @@
+DROP SCHEMA IF EXISTS tvondemand;
+CREATE SCHEMA tvondemand;
+USE tvondemand;
+
+--
+-- Table structure for table `actor`
+--
+
+CREATE TABLE actor (
+	actor_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	first_name VARCHAR(45) NOT NULL,
+	last_name VARCHAR(45) NOT NULL,
+	PRIMARY KEY  (actor_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `country`
+--
+
+CREATE TABLE country (
+	country_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	country VARCHAR(50) NOT NULL,
+	PRIMARY KEY  (country_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `city`
+--
+
+CREATE TABLE city (
+	city_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	city VARCHAR(50) NOT NULL,
+	country_id SMALLINT UNSIGNED NOT NULL,
+	PRIMARY KEY  (city_id),
+	CONSTRAINT `fk_city_country` FOREIGN KEY (country_id) REFERENCES country (country_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `address`
+--
+
+CREATE TABLE address (
+	address_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	address VARCHAR(50) NOT NULL,
+	district VARCHAR(20) DEFAULT NULL,
+	city_id SMALLINT UNSIGNED NOT NULL,
+	postal_code VARCHAR(10) DEFAULT NULL,
+	phone VARCHAR(20) NOT NULL,
+	PRIMARY KEY  (address_id),
+	CONSTRAINT `fk_address_city` FOREIGN KEY (city_id) REFERENCES city (city_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `category`
+--
+
+CREATE TABLE category (
+	category_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	name VARCHAR(25) NOT NULL,
+	PRIMARY KEY  (category_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `language`
+--
+
+CREATE TABLE language (
+	language_id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	name CHAR(20) NOT NULL,
+	PRIMARY KEY (language_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `customer`
+--
+
+CREATE TABLE customer (
+	customer_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	first_name VARCHAR(45) NOT NULL,
+	last_name VARCHAR(45) NOT NULL,
+	email VARCHAR(50) DEFAULT NULL,
+	address_id SMALLINT UNSIGNED NOT NULL,
+	active BOOLEAN NOT NULL DEFAULT TRUE,
+	create_date DATETIME NOT NULL,
+	film_pack BOOLEAN NOT NULL DEFAULT FALSE,
+	series_pack BOOLEAN NOT NULL DEFAULT FALSE,
+	full_pack BOOLEAN NOT NULL DEFAULT FALSE,
+	PRIMARY KEY  (customer_id),
+	CONSTRAINT fk_customer_address FOREIGN KEY (address_id) REFERENCES address (address_id) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `film`
+--
+
+CREATE TABLE film (
+	film_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	title VARCHAR(128) NOT NULL,
+    description TEXT DEFAULT NULL,
+	release_year YEAR DEFAULT NULL,
+	language_id TINYINT UNSIGNED NOT NULL,
+	original_language_id TINYINT UNSIGNED DEFAULT NULL,
+	length SMALLINT UNSIGNED DEFAULT NULL,
+	rating ENUM('G','PG','PG-13','R','NC-17') DEFAULT 'G',
+	special_features SET('Trailers','Commentaries','Deleted Scenes','Behind the Scenes','NOTHING') DEFAULT NULL,
+	PRIMARY KEY  (film_id),
+	CONSTRAINT fk_film_language FOREIGN KEY (language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_film_language_original FOREIGN KEY (original_language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- table for series
+--
+ 
+CREATE TABLE series(
+	series_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	title VARCHAR(128) NOT NULL,
+	description TEXT DEFAULT NULL,
+	release_year YEAR DEFAULT NULL,
+	language_id TINYINT UNSIGNED NOT NULL,
+	original_language_id TINYINT UNSIGNED DEFAULT NULL,
+	season_count TINYINT UNSIGNED NOT NULL,
+	rating ENUM('G','PG','PG-13','R','NC-17') DEFAULT 'G',
+	special_features SET('Trailers','Commentaries','Deleted Scenes','Behind the Scenes','NOTHING') DEFAULT NULL,
+	PRIMARY KEY  (series_id),
+	CONSTRAINT fk_series_language FOREIGN KEY (language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_series_language_original FOREIGN KEY (original_language_id) REFERENCES language (language_id) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- TABLE  season
+--
+ 
+CREATE TABLE season(
+	season_id MEDIUMINT NOT NULL AUTO_INCREMENT,
+	series_id SMALLINT UNSIGNED NOT NULL,
+	season_no TINYINT NOT NULL,
+	season_episodes TINYINT UNSIGNED NOT NULL,
+	season_title VARCHAR(128) NOT NULL,
+	PRIMARY KEY(season_id),
+	CONSTRAINT fk_season_series FOREIGN KEY (series_id) REFERENCES series (series_id) ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ 
+--
+-- Table structure for table `film_actor`
+--
+
+CREATE TABLE film_series_actor (
+	actor_id SMALLINT UNSIGNED,
+	film_id SMALLINT UNSIGNED,
+	series_id SMALLINT UNSIGNED,
+	CONSTRAINT fk_film_series_actor_actor FOREIGN KEY (actor_id) REFERENCES actor (actor_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_film_series__actor_film FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_film_series__actor_series FOREIGN KEY (series_id) REFERENCES series (series_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `film_category`
+--
+
+CREATE TABLE film_series_category (
+	film_id SMALLINT UNSIGNED,
+	category_id TINYINT UNSIGNED,
+	series_id SMALLINT UNSIGNED,
+	CONSTRAINT fk_film_series_category_film FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_film_series_category_category FOREIGN KEY (category_id) REFERENCES category (category_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_film_series_category_series FOREIGN KEY (series_id) REFERENCES series (series_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `inventory`
+--
+
+CREATE TABLE inventory (
+	inventory_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	film_id SMALLINT UNSIGNED NOT NULL,
+	PRIMARY KEY  (inventory_id),
+	CONSTRAINT fk_inventory_film FOREIGN KEY (film_id) REFERENCES film (film_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ --
+ -- table for series_inventory
+ --
+ 
+CREATE TABLE series_inventory (
+	series_inventory_id MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	series_id SMALLINT UNSIGNED NOT NULL,
+	season_id MEDIUMINT NOT NULL  ,
+	PRIMARY KEY  (series_inventory_id),
+	CONSTRAINT fk_series_inventory_series FOREIGN KEY (series_id) REFERENCES series (series_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_series_inventory_season FOREIGN KEY (season_id) REFERENCES season (season_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `rental`
+--
+
+CREATE TABLE rental (
+	rental_id INT NOT NULL AUTO_INCREMENT,
+	rental_date DATETIME NOT NULL,
+	inventory_id MEDIUMINT UNSIGNED NULL,
+	customer_id SMALLINT UNSIGNED NOT NULL,
+	series_inventory_id MEDIUMINT UNSIGNED NULL,
+	PRIMARY KEY (rental_id),
+	UNIQUE KEY  (rental_date,customer_id),
+	CONSTRAINT fk_rental_inventory FOREIGN KEY (inventory_id) REFERENCES inventory (inventory_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_rental_series_inventory FOREIGN KEY (series_inventory_id) REFERENCES series_inventory (series_inventory_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_rental_customer FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `payment`
+--
+
+CREATE TABLE payment (
+	payment_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	customer_id SMALLINT UNSIGNED NOT NULL,
+	rental_id INT DEFAULT NULL,
+	amount DECIMAL(5,2) NOT NULL,
+	payment_date DATETIME NOT NULL,
+	PRIMARY KEY  (payment_id),
+	CONSTRAINT fk_payment_rental FOREIGN KEY (rental_id) REFERENCES rental (rental_id) ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT fk_payment_customer FOREIGN KEY (customer_id) REFERENCES customer (customer_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ 
+ --
+ -- table for employee
+ --
+ 
+CREATE TABLE employee(
+	employee_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	first_name VARCHAR(45) NOT NULL,
+	last_name VARCHAR(45) NOT NULL,
+	email VARCHAR(50) DEFAULT NULL,
+	gender ENUM('FEMALE','MALE') NOT NULL,
+	address_id SMALLINT UNSIGNED NOT NULL,
+	date_of_hire DATETIME NOT NULL,
+	salary DECIMAL(6,2) NOT NULL,
+	rating ENUM('A1','A2','A3','B1','B2','B3','C1','C2','C3') DEFAULT 'C3',
+	PRIMARY KEY(employee_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ 
+ --
+ -- table for Admin
+ --
+ 
+CREATE TABLE administrator(
+	admin_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	first_name VARCHAR(45) NOT NULL,
+	last_name VARCHAR(45) NOT NULL,
+	email VARCHAR(50) DEFAULT NULL,
+    gender ENUM('FEMALE','MALE') NOT NULL,
+	address_id SMALLINT UNSIGNED NOT NULL,
+	salary DECIMAL(6,2) NOT NULL,
+	PRIMARY KEY(admin_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ 
+--
+-- table for current_customer
+--
+
+CREATE TABLE current_customer (
+    customer_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(45) NOT NULL,
+    last_name VARCHAR(45) NOT NULL,
+	email VARCHAR(50) DEFAULT NULL,
+    create_date DATETIME NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    country VARCHAR(50) NOT NULL,
+	address VARCHAR(50) NOT NULL,
+	district VARCHAR(20) DEFAULT NULL,
+	city VARCHAR(50) NOT NULL,
+    postal_code VARCHAR(10) DEFAULT NULL,
+    phone VARCHAR(20) NOT NULL,
+    film_pack BOOLEAN NOT NULL DEFAULT FALSE,
+    series_pack BOOLEAN NOT NULL DEFAULT FALSE,
+    full_pack BOOLEAN NOT NULL DEFAULT FALSE,
+    in_use BOOLEAN,
+    PRIMARY KEY  (customer_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    
+--
+-- table for current_Admin
+--
+ 
+CREATE TABLE current_administrator(
+	admin_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	first_name VARCHAR(45) NOT NULL,
+	last_name VARCHAR(45) NOT NULL,
+	email VARCHAR(50) DEFAULT NULL,
+	gender ENUM('FEMALE','MALE') NOT NULL,
+	country VARCHAR(50) NOT NULL,
+	address VARCHAR(50) NOT NULL,
+	district VARCHAR(20) DEFAULT NULL,
+	city VARCHAR(50) NOT NULL,
+	postal_code VARCHAR(10) DEFAULT NULL,
+	phone VARCHAR(20) NOT NULL,
+	salary DECIMAL(6,2) NOT NULL,
+    in_use BOOLEAN,
+	PRIMARY KEY(admin_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ 
+--
+-- table for current_employee
+--
+ 
+CREATE TABLE current_employee(
+	employee_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	first_name VARCHAR(45) NOT NULL,
+	last_name VARCHAR(45) NOT NULL,
+	email VARCHAR(50) DEFAULT NULL,
+	gender ENUM('FEMALE','MALE') NOT NULL,
+	country VARCHAR(50) NOT NULL,
+	address VARCHAR(50) NOT NULL,
+	district VARCHAR(20) DEFAULT NULL,
+	city VARCHAR(50) NOT NULL,
+	postal_code VARCHAR(10) DEFAULT NULL,
+	phone VARCHAR(20) NOT NULL,
+	date_of_hire DATETIME NOT NULL,
+	salary DECIMAL(6,2) NOT NULL,
+	rating ENUM('A1','A2','A3','B1','B2','B3','C1','C2','C3') DEFAULT 'C3',
+    in_use BOOLEAN,
+	PRIMARY KEY(employee_id)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ 
+--
+-- Logs Table
+--
+ 
+CREATE TABLE log_table( 
+	first_name VARCHAR(45) NOT NULL,
+	last_name VARCHAR(45) NOT NULL,
+	change_date DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
+	katastasi ENUM('Epitixia','Apotixia') NOT NULL,
+	eidos ENUM('insert','update','delete') NOT NULL,
+	table_name_ VARCHAR(45) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Pricing Table
+--
+ 
+CREATE TABLE pricing( 
+	film_price DECIMAL(3,1) NOT NULL,
+	series_price DECIMAL(3,1) NOT NULL,
+	film_full_pack_price DECIMAL(3,1) NOT NULL,
+	series_full_pack_price DECIMAL(3,1) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+ 
